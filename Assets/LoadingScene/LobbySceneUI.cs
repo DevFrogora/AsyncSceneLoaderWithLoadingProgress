@@ -1,10 +1,40 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class LobbySceneUI : MonoBehaviour
 {
     int mapSceneIndex = 1;
+    public Image voiceImage;
+    public Sprite voiceDisableSprite;
+    public Sprite voiceEnableSprite;
+
+    public Image speakerImage;
+    public Sprite speakerEnableSprite;
+    public Sprite speakerDisableSprite;
+
+    enum VoiceStatus{
+        Enable,
+        Disable,
+    };
+
+    enum SpeakerStatus
+    {
+        Enable,
+        Disable,
+    };
+
+    VoiceStatus voiceStatus;
+    SpeakerStatus speakerStatus;
+
+    private void Start()
+    {
+        speakerImage.sprite = speakerDisableSprite;
+        speakerStatus = SpeakerStatus.Disable;
+        voiceImage.sprite = voiceDisableSprite;
+        voiceStatus = VoiceStatus.Disable;
+    }
+
 
     public void MapSelection(int _mapSceneIndex)
     {
@@ -26,5 +56,36 @@ public class LobbySceneUI : MonoBehaviour
             Loader.Load(Loader.Scene.TrainingScene);
         }
 
+    }
+
+
+    public void OnVoiceBtnClick()
+    {
+        if(voiceStatus == VoiceStatus.Enable)
+        {
+            voiceImage.sprite = voiceDisableSprite;
+            voiceStatus = VoiceStatus.Disable;
+        }
+        else
+        {
+            voiceImage.sprite = voiceEnableSprite;
+            voiceStatus = VoiceStatus.Enable;
+        }
+    }
+
+    public void OnSpeakerBtnClick()
+    {
+        if (speakerStatus == SpeakerStatus.Enable)
+        {
+            speakerImage.sprite = speakerDisableSprite;
+            speakerStatus = SpeakerStatus.Disable;
+        }
+        else
+        {
+            speakerImage.sprite = speakerEnableSprite;
+            speakerStatus = SpeakerStatus.Enable;
+        }
+
+        // instead of enum use bool and toogle it
     }
 }
