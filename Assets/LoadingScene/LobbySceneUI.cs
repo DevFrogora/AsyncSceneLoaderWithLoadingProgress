@@ -88,4 +88,21 @@ public class LobbySceneUI : MonoBehaviour
 
         // instead of enum use bool and toogle it
     }
+
+
+    bool ismapOpen= false;
+    public Image bigMapImage;
+    public void onMapClicked()
+    {
+        if(ismapOpen)
+        {
+            bigMapImage.gameObject.SetActive(false);
+            ismapOpen = false;
+            Debug.Log("map close");
+            return;
+        }
+        bigMapImage.gameObject.SetActive(true);
+        ismapOpen = true;
+        Debug.Log("map open");
+    }
 }
