@@ -9,10 +9,10 @@ public static class Loader
     private class LoadingMonoBehaviour : MonoBehaviour { }
 
     public enum Scene{
-        IslandScene,
-        Loading,
         LobbyScene,
+        IslandScene,
         TrainingScene,
+        Loading,
     };
 
     private static Action onLoaderCallback;
