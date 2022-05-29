@@ -53,10 +53,13 @@ public class IslandMap : MonoBehaviour ,IPointerDownHandler ,IPointerUpHandler ,
 
                 Vector3 screenPoint = Camera.main.ScreenToViewportPoint(_mouseReference);
                 screenPoint.x = Mathf.InverseLerp(0.38f, 0.9f, screenPoint.x);
-                Debug.Log(screenPoint.x);
-                Vector2 minimapScreenPoint = screenPoint;
-                var mousePosition = minimapScreenPoint * new Vector2(Screen.width, Screen.height);
+                //Debug.Log(screenPoint.x);
+                Vector2 minimapScreenPoint = screenPoint; // normalise value
+                minimapScreenPoint.x = minimapScreenPoint.x * 0.20f; //tweking width;
+                minimapScreenPoint.y = minimapScreenPoint.y * 0.35f;
+                var mousePosition = minimapScreenPoint * new Vector2(Screen.width, Screen.height)  ; 
                 Ray r = worldMiniMapCamera.ScreenPointToRay(new Vector3(mousePosition.x, mousePosition.y, 0));
+                //Debug.Log(worldMiniMapCamera.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, 0)));
                 RaycastHit hit;
                 if (Physics.Raycast(r, out hit))
                 {
@@ -64,6 +67,7 @@ public class IslandMap : MonoBehaviour ,IPointerDownHandler ,IPointerUpHandler ,
                     clickPoint.transform.position = hit.point;
                     Debug.DrawRay(r.origin, r.direction * 500, Color.red, 100, true);
                 }
+                //Debug.Log(eventData.pointerCurrentRaycast.screenPosition);
 
             }
         }
