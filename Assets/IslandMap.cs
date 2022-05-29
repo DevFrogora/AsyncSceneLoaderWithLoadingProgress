@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using TMPro;
 public class IslandMap : MonoBehaviour ,IPointerDownHandler ,IPointerUpHandler ,IBeginDragHandler,IEndDragHandler , IDragHandler
 {
     private Vector3 _mouseReference;
@@ -15,21 +16,24 @@ public class IslandMap : MonoBehaviour ,IPointerDownHandler ,IPointerUpHandler ,
     public Camera worldMiniMapCamera;
 
     public Image Marker;
+    public TextMeshProUGUI markerDistance;
+    public SpriteRenderer originalMap;
 
     void Start()
     {
         //enable is required only if you're not using PlayerInput anywhere else
-        //_playerInput = GetComponent<PlayerInput>();
+        _playerInput = GetComponent<PlayerInput>();
 
-        //_actionMap = _playerInput.actions.FindActionMap("Lobby");
-        //_pos = _actionMap.FindAction("Position");
+        _actionMap = _playerInput.actions.FindActionMap("Lobby");
+        _pos = _actionMap.FindAction("Position");
 
     }
 
-
+    public RectTransform mapUiImage;
+    public GameObject pinkPixel;
     public void OnPointerDown(PointerEventData eventData)
     {
-        //_mouseReference = _pos.ReadValue<Vector2>();
+        _mouseReference = _pos.ReadValue<Vector2>();
         var results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(eventData, results);
 
@@ -37,35 +41,73 @@ public class IslandMap : MonoBehaviour ,IPointerDownHandler ,IPointerUpHandler ,
         {
             if (result.gameObject.name == "WholeMinimapRenderTexture")
             {
-                Debug.Log(result.screenPosition);
-                Debug.Log(result.worldPosition);
-                Debug.Log(result.worldNormal);
+                //Debug.Log(result.screenPosition);
+                //Debug.Log(result.worldPosition);
+                //Debug.Log(result.worldNormal);
                 Marker.gameObject.GetComponent<RectTransform>().position = result.screenPosition;
+
+                float distance = Mathf.Round(Vector2.Distance(transform.position, Marker.transform.position));
+
+                markerDistance.text = distance.ToString() + " M";
+
+
+                Vector3 screenPoint = Camera.main.ScreenToViewportPoint(_mouseReference);
+                screenPoint.x = Mathf.InverseLerp(0.38f, 0.9f, screenPoint.x);
+                Debug.Log(screenPoint.x);
+                Vector2 minimapScreenPoint = screenPoint;
+                var mousePosition = minimapScreenPoint * new Vector2(Screen.width, Screen.height);
+                Ray r = worldMiniMapCamera.ScreenPointToRay(new Vector3(mousePosition.x, mousePosition.y, 0));
+                RaycastHit hit;
+                if (Physics.Raycast(r, out hit))
+                {
+                    GameObject clickPoint = Instantiate(pinkPixel);
+                    clickPoint.transform.position = hit.point;
+                    Debug.DrawRay(r.origin, r.direction * 500, Color.red, 100, true);
+                }
 
             }
         }
-        //Debug.Log(_mouseReference);
+        
 
+
+    }
+    public RectTransform closePanel;
+
+    public void CastRay()
+    {
+        Vector3 screenPoint = Camera.main.ScreenToViewportPoint(_mouseReference);
+        Debug.Log(screenPoint.x);
+        screenPoint.x = Mathf.InverseLerp(0.38f, 0.9f, screenPoint.x);
+        Vector2 minimapScreenPoint = screenPoint;
+        var mousePosition = minimapScreenPoint * new Vector2(Screen.width, Screen.height);
+        Ray r = worldMiniMapCamera.ScreenPointToRay(new Vector3(mousePosition.x, mousePosition.y, 0));
+        RaycastHit hit;
+        if (Physics.Raycast(r, out hit))
+        {
+            GameObject clickPoint = Instantiate(pinkPixel);
+            clickPoint.transform.position = hit.point;
+            Debug.DrawRay(r.origin, r.direction * 500, Color.red, 100, true);
+        }
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        Debug.Log("PointerUp");
+        //Debug.Log("PointerUp");
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        Debug.Log("OnBeginDrag");
+        //Debug.Log("OnBeginDrag");
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        Debug.Log("OnDrag");
+        //Debug.Log("OnDrag");
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        Debug.Log("EndDrag");
+        //Debug.Log("EndDrag");
     }
 
 }
